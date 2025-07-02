@@ -2,6 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { RecipeService } from "../recipes/recipe.service";
 import { Recipe } from "../recipes/recipe.model";
+import { map } from "rxjs/operators";
 
 @Injectable({ providedIn: 'root' })
 export class DataStorageService {
@@ -20,6 +21,14 @@ export class DataStorageService {
     fetchRecipes() {
         this.http
             .get<Recipe[]>('https://ng-course-recipe-book-d88d0-default-rtdb.firebaseio.com/recipes.json')
+            //map is used to transform the data before it is returned
+            //in this case we are transforming the data to add ingredients to the recipes
+            //if the recipe has no ingredients, we set it to an empty array
+            .pipe(map(recipes => {
+                return recipes.map(recipe => {
+                    return { ...recipe, ingredients: recipe.ingredients ? recipe.ingredients : [] }
+                })
+            }))
             .subscribe((recipes) => {
                 this.recipeService.setRecipes(recipes);
             })
