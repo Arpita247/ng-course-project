@@ -10,7 +10,7 @@ import { map, catchError } from "rxjs/operators";
 export class RecipeResolverService implements Resolve<Recipe[]> {
 
     constructor(
-        private dataStorageService: DataStorageService, 
+        private dataStorageService: DataStorageService,
         private recipesService: RecipeService,
         private router: Router
     ) { }
@@ -18,7 +18,7 @@ export class RecipeResolverService implements Resolve<Recipe[]> {
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Recipe[]> | Recipe[] {
         // Get the id parameter from the route
         const id = route.params['id'];
-        
+
         const recipes = this.recipesService.getRecipes();
 
         if (recipes.length === 0) {
@@ -46,14 +46,14 @@ export class RecipeResolverService implements Resolve<Recipe[]> {
 
     private validateRecipeId(id: string, recipes: Recipe[]): Recipe[] {
         const recipeIndex = +id; // Convert string to number
-        
+
         // Check if ID is a valid number and within bounds
         if (isNaN(recipeIndex) || recipeIndex < 0 || recipeIndex >= recipes.length) {
             // Invalid ID - redirect to recipes page
             this.router.navigate(['/recipes']);
             return [];
         }
-        
+
         // ID is valid, return the recipes
         return recipes;
     }
